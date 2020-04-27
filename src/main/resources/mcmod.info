@@ -1,0 +1,16 @@
+[
+{
+  "modid": "gaps",
+  "name": "gaps",
+  "description": "bridge client for minecraft",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://pepsipu.com",
+  "updateUrl": "",
+  "authorList": ["pepsipu"],
+  "credits": "pepsipu's ide, intellij for being such a cutie <3",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
