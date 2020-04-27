@@ -5,12 +5,14 @@ import com.pepsipu.gaps.commands.SafeWalk;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.MovementInputFromOptions;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,13 +48,10 @@ public class Gaps
     {
         System.out.println("gaps has initialized");
         MinecraftForge.EVENT_BUS.register(this);
-    }
-    @EventHandler
-    public void onServerStart(FMLServerStartingEvent e) {
         this.mc = Minecraft.getMinecraft();
         this.sw = new SafeWalk();
         this.sw.mc = this.mc;
-        e.registerServerCommand(this.sw);
+        ClientCommandHandler.instance.registerCommand(this.sw);
     }
     @SubscribeEvent
     public void onTick(TickEvent e) {

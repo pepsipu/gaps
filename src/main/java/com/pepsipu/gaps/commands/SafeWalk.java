@@ -30,4 +30,9 @@ public class SafeWalk extends CommandBase {
             this.mc.thePlayer.movementInput = new MovementInputFromOptions(this.mc.gameSettings);
         }
     }
+
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 0;
+    }
 }
