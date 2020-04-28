@@ -42,6 +42,8 @@ public class Gaps
 
     private SafeWalk sw;
     private Minecraft mc;
+    private int ticksElapsed;
+    private MovementInput mi;
 
     @EventHandler
     public void init(FMLInitializationEvent e)
@@ -52,22 +54,32 @@ public class Gaps
         this.sw = new SafeWalk();
         this.sw.mc = this.mc;
         ClientCommandHandler.instance.registerCommand(this.sw);
+        this.mi = new MovementInput();
+        this.mi.sneak = true;
     }
     @SubscribeEvent
     public void onTick(TickEvent e) {
         if (e.side.isClient() && Minecraft.getMinecraft().thePlayer != null && this.sw.isActive) {
-            IBlockState block = this.mc.theWorld.getBlockState(new BlockPos(this.mc.thePlayer.posX, this.mc.thePlayer.posY - 1, this.mc.thePlayer.posZ));
+            boolean negativeXOffset = Math.random() > .3;
+            boolean negativeZOffset = Math.random() > .2;
+            IBlockState block = this.mc.theWorld.getBlockState(new BlockPos(this.mc.thePlayer.posX + (negativeXOffset ? -(Math.random() % .07) : (Math.random() % .07)), this.mc.thePlayer.posY - 1, this.mc.thePlayer.posZ + (negativeZOffset ? -(Math.random() % .2) : (Math.random() % .2))));
             boolean atEdge = Math.ceil(this.mc.thePlayer.posY) == this.mc.thePlayer.posY && block.getBlock().getUnlocalizedName().equals("tile.air");
             if (atEdge && !this.sw.atEdge) {
-                MovementInput mi = new MovementInput();
-                mi.sneak = true;
-                this.mc.thePlayer.movementInput = mi;
                 this.sw.atEdge = true;
-                System.out.println("crouched");
+                ticksElapsed = 0;
             } else if (!atEdge && this.sw.atEdge) {
                 this.mc.thePlayer.movementInput = new MovementInputFromOptions(this.mc.gameSettings);
                 this.sw.atEdge = false;
-                System.out.println("uncrouched");
+            }
+            if (atEdge && ticksElapsed > (int) (Math.random() * 4) + 10) {
+                ticksElapsed = -1;
+                mi.moveForward = 0;
+            } else if (ticksElapsed != -1){
+                ticksElapsed++;
+            }
+            if (atEdge && ticksElapsed > (int) (Math.random() * 5) + 5) {
+                mi.moveForward = -1;
+                this.mc.thePlayer.movementInput = mi;
             }
         }
     }
