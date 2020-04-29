@@ -20,8 +20,8 @@ public class Gaps
     public static final String VERSION = "1.0";
 
     private NewMovement newMovement = new NewMovement(Minecraft.getMinecraft().gameSettings);
-    private Andromeda andromeda = new Andromeda(this.newMovement);
     private SafeWalk safeWalk = new SafeWalk(this.newMovement);
+    //private Andromeda andromeda = new Andromeda(this.newMovement, this.safeWalk);
 
 
     public Gaps() throws AWTException {
@@ -33,13 +33,16 @@ public class Gaps
         System.out.println("gaps has initialized");
         MinecraftForge.EVENT_BUS.register(this);
         ClientCommandHandler.instance.registerCommand(this.safeWalk);
-        ClientCommandHandler.instance.registerCommand(this.andromeda);
+        //ClientCommandHandler.instance.registerCommand(this.andromeda);
     }
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (Minecraft.getMinecraft().thePlayer == null) {
+        if (e.phase != TickEvent.Phase.START || !e.side.isClient()) {
             return;
         }
-        this.safeWalk.autoCrouch();
+        boolean onEdge = this.safeWalk.autoCrouch();
+        if (onEdge) {
+            //this.andromeda.scaffold();
+        }
     }
 }

@@ -10,9 +10,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovementInputFromOptions;
 
 public class SafeWalk extends CommandBase {
-    private boolean isActive = false;
+    public boolean isActive = false;
+    public Minecraft mc;
     private NewMovement newMovement;
-    private Minecraft mc;
 
     public SafeWalk(NewMovement newMovement) {
         this.newMovement = newMovement;
@@ -40,11 +40,15 @@ public class SafeWalk extends CommandBase {
         }
     }
 
-    public void autoCrouch() {
-        if (this.isActive) {
-            IBlockState block = this.mc.theWorld.getBlockState(new BlockPos(this.mc.thePlayer.posX + ((Math.random() * 2) - 1) * .07, this.mc.thePlayer.posY - 1, this.mc.thePlayer.posZ + ((Math.random() * 2) - 1) * .07));
-            this.newMovement.sneak = this.mc.thePlayer.posY % 1 == 0 && block.getBlock().getUnlocalizedName().equals("tile.air");
-        }
+    public boolean autoCrouch() {
+        if (!this.isActive) return false;
+        Minecraft.getMinecraft().thePlayer.movementInput = this.newMovement;
+        if (this.isActive) return false;
+        IBlockState block = this.mc.theWorld.getBlockState(new BlockPos(this.mc.thePlayer.posX + ((Math.random() * 2) - 1) * .07, this.mc.thePlayer.posY - 1, this.mc.thePlayer.posZ + ((Math.random() * 2) - 1) * .07));
+        boolean onEdge = this.mc.thePlayer.posY % 1 == 0 && block.getBlock().getUnlocalizedName().equals("tile.air");
+        this.newMovement.sneak = onEdge;
+        System.out.println("bruh");
+        return onEdge;
     }
 
     @Override
